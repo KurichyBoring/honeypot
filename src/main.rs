@@ -19,7 +19,6 @@ struct WalletState {
     address: String,
 }
 
-// === Формы ===
 #[derive(Deserialize, Debug)]
 struct LoginForm {
     username: String,
@@ -330,7 +329,7 @@ async fn admin_login() -> Html<String> {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel — Login</title>
+    <title>Adm Panel</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -424,7 +423,7 @@ async fn admin_login() -> Html<String> {
             <button type="submit">Login</button>
         </form>
         <div class="footer">
-            © 2025 SecureCrypto Admin System
+            © 2025 Secure
         </div>
     </div>
 </body>
@@ -439,7 +438,7 @@ async fn send_eth(State(state): State<AppState>, Form(form): Form<SendForm>) -> 
         if amount > 0.0 && amount <= wallet.balance {
             if form.to.len() == 42 && form.to.starts_with("0x") {
                 wallet.balance -= amount;
-                info!("Fake transaction: {} ETH sent to {}", amount, form.to);
+                info!("Transaction: {} ETH sent to {}", amount, form.to);
             }
         }
     }
@@ -522,7 +521,7 @@ async fn main() {
         .with_state(app_state);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 8080));
-    info!("Honeypot запущен на http://{}", addr);
+    info!("Запущен: http://{}", addr);
 
     axum::serve(
         tokio::net::TcpListener::bind(addr).await.unwrap(),
