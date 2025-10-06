@@ -521,7 +521,7 @@ async fn main() {
         .with_state(app_state);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 8080));
-    info!("Запущен: http://{}", addr);
+    info!("Запущен: http://localhost:{}", addr.port());
 
     axum::serve(
         tokio::net::TcpListener::bind(addr).await.unwrap(),
