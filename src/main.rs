@@ -21,10 +21,34 @@ async fn main() {
     let chat_id = std::env::var("TELEGRAM_CHAT_ID")
         .expect("TELEGRAM_CHAT_ID must be set in .env");
 
+    let mut balances = std::collections::HashMap::new();
+    balances.insert("eth".to_string(), 0.27);
+    balances.insert("bnb".to_string(), 2.10);
+    balances.insert("matic".to_string(), 15.00);
+    balances.insert("sol".to_string(), 0.27);
+    balances.insert("arb".to_string(), 3.50);
+    balances.insert("op".to_string(), 1.80);
+    balances.insert("avax".to_string(), 0.95);
+    balances.insert("base".to_string(), 0.15);
+    balances.insert("sui".to_string(), 5.20);
+    balances.insert("apt".to_string(), 8.75);
+
+    let mut addresses = std::collections::HashMap::new();
+    addresses.insert("eth".to_string(), "0x742d35Cc6634C0532925a3b844Bc454e4438f412".to_string());
+    addresses.insert("bnb".to_string(), "0x742d35Cc6634C0532925a3b844Bc454e4438f412".to_string());
+    addresses.insert("matic".to_string(), "0x742d35Cc6634C0532925a3b844Bc454e4438f412".to_string());
+    addresses.insert("sol".to_string(), "F3B8mJjZvXrGkVQwWYRqoT9KzPpN7sHhMnDcAeU7".to_string());
+    addresses.insert("arb".to_string(), "0x742d35Cc6634C0532925a3b844Bc454e4438f412".to_string());
+    addresses.insert("op".to_string(), "0x742d35Cc6634C0532925a3b844Bc454e4438f412".to_string());
+    addresses.insert("avax".to_string(), "0x742d35Cc6634C0532925a3b844Bc454e4438f412".to_string());
+    addresses.insert("base".to_string(), "0x742d35Cc6634C0532925a3b844Bc454e4438f412".to_string());
+    addresses.insert("sui".to_string(), "0x742d35Cc6634C0532925a3b844Bc454e4438f412".to_string()); // Упрощённый
+    addresses.insert("apt".to_string(), "0x742d35Cc6634C0532925a3b844Bc454e4438f412".to_string()); // Упрощённый
+
     let app_state = models::AppState {
         wallet: std::sync::Arc::new(std::sync::Mutex::new(models::WalletState {
-            balance: 4.27,
-            address: "0x742d35Cc6634C0532925a3b844Bc454e4438f412".to_string(),
+            balances,
+            addresses,
         })),
         bot_token,
         chat_id,
@@ -32,7 +56,7 @@ async fn main() {
 
     let app = Router::new()
         .route("/", get(handlers::index::index))
-        .route("/send", post(handlers::send::send_eth))
+        .route("/send", post(handlers::send::send_eth)) // будет обрабатывать все сети
         .route("/admin", get(handlers::admin::admin_login).post(handlers::admin::handle_login))
         .with_state(app_state);
 
