@@ -6,11 +6,12 @@ pub async fn index(State(state): State<AppState>) -> Html<String> {
     let balances = &wallet.balances;
     let addresses = &wallet.addresses;
 
-    // Порядок отображения — 3 строки по 3 карточки
+    // Порядок отображения — 4 строки по 4 карточки (всего 16)
     let display_order = vec![
-        "eth", "bnb", "matic",
-        "sol", "arb", "op",
-        "avax", "sui", "apt",
+        "eth", "bnb", "matic", "sol",   // строка 1
+        "arb", "op", "avax", "sui",     // строка 2
+        "apt", "base", "ftm", "tia",    // строка 3
+        "xrp", "doge", "dot", "link",   // строка 4 — добавлены XRP, DOGE + DOT, LINK для полноты
     ];
 
     let mut cards_html = String::new();
@@ -27,7 +28,34 @@ pub async fn index(State(state): State<AppState>) -> Html<String> {
                 "avax" => "AVAX",
                 "sui" => "SUI",
                 "apt" => "APT",
+                "base" => "ETH",
+                "ftm" => "FTM",
+                "tia" => "TIA",
+                "xrp" => "XRP",
+                "doge" => "DOGE",
+                "dot" => "DOT",
+                "link" => "LINK",
                 _ => "UNKNOWN",
+            };
+
+            let symbol = match network {
+                "eth" => "Ξ",
+                "bnb" => "B",
+                "matic" => "M",
+                "sol" => "◎",
+                "arb" => "A",
+                "op" => "O",
+                "avax" => "V",
+                "sui" => "S",
+                "apt" => "A",
+                "base" => "B",
+                "ftm" => "F",
+                "tia" => "T",
+                "xrp" => "X",
+                "doge" => "D",
+                "dot" => "●",
+                "link" => "🔗",
+                _ => "?",
             };
 
             let color = match network {
@@ -40,27 +68,21 @@ pub async fn index(State(state): State<AppState>) -> Html<String> {
                 "avax" => "#f59e0b",  // жёлтый
                 "sui" => "#14b8a6",   // бирюзовый
                 "apt" => "#f59e0b",   // оранжево-коричневый
+                "base" => "#0ea5e9",  // синий
+                "ftm" => "#ec4899",   // малиновый
+                "tia" => "#10b981",   // изумрудный
+                "xrp" => "#0080ff",   // синий
+                "doge" => "#ffa500",  // оранжевый
+                "dot" => "#e6007a",   // розовый
+                "link" => "#3650f0",  // синий
                 _ => "#ffffff",
-            };
-
-            let icon = match network {
-                "eth" => "Ξ",
-                "bnb" => "B",
-                "matic" => "M",
-                "sol" => "S",
-                "arb" => "A",
-                "op" => "O",
-                "avax" => "V",
-                "sui" => "S",
-                "apt" => "A",
-                _ => "?",
             };
 
             let card = format!(
                 r#"<div class="card" style="background: {color};">
-                    <div class="icon">{icon}</div>
+                    <div class="icon">{symbol}</div>
                     <div class="info">
-                        <div class="currency">{currency}</div>
+                        <div class="currency" style="color: #b0b0b0;">{currency}</div>
                         <div class="amount">{:.2} {currency}</div>
                     </div>
                     <div class="actions">
@@ -68,7 +90,7 @@ pub async fn index(State(state): State<AppState>) -> Html<String> {
                         <button class="btn receive" onclick="openReceiveModal('{network}')">Receive</button>
                     </div>
                 </div>"#,
-                balance, color = color, icon = icon, currency = currency, network = network
+                balance, color = color, symbol = symbol, currency = currency, network = network
             );
 
             cards_html.push_str(&card);
@@ -164,8 +186,9 @@ pub async fn index(State(state): State<AppState>) -> Html<String> {
         
         .currency {{
             font-size: 0.9rem;
-            color: #b0b0b0;
+            color: #b0b0b0; /* вернули светло-серый */
             margin-bottom: 5px;
+            font-weight: 500;
         }}
         
         .amount {{
@@ -305,7 +328,7 @@ pub async fn index(State(state): State<AppState>) -> Html<String> {
 </head>
 <body>
     <div class="header">
-        <div class="logo">SecCrypto</div>
+        <div class="logo">🔒 SecureCrypto</div>
         <a href="/admin" class="admin-link">Admin</a>
     </div>
     <div class="main-content">
@@ -408,7 +431,7 @@ pub async fn index(State(state): State<AppState>) -> Html<String> {
             }}
 
             let isValid = false;
-            if (network === 'sol' || network === 'sui' || network === 'apt') {{
+            if (network === 'sol' || network === 'sui' || network === 'apt' || network === 'ftm' || network === 'tia' || network === 'xrp' || network === 'doge' || network === 'dot' || network === 'link') {{
                 isValid = /^[A-Za-z0-9]+$/.test(to) && to.length >= 32 && to.length <= 64;
             }} else {{
                 isValid = /^0x[a-fA-F0-9]{{40}}$/.test(to);
